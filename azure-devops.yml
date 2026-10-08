@@ -1,0 +1,26 @@
+﻿trigger:
+  branches:
+    include: [ master ]
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 8.x
+  - script: dotnet build --configuration Release
+    workingDirectory: SauceDemo.Tests
+    displayName: Build
+  - pwsh: bin/Release/net8.0/playwright.ps1 install --with-deps
+    workingDirectory: SauceDemo.Tests
+    displayName: Install browsers
+  - script: dotnet test --configuration Release --no-build --settings test.runsettings --logger trx --results-directory $(Agent.TempDirectory)/results
+    workingDirectory: SauceDemo.Tests
+    displayName: Run tests
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: VSTest
+      testResultsFiles: '$(Agent.TempDirectory)/results/*.trx'
