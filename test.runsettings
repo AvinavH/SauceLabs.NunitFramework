@@ -6,7 +6,7 @@
 <Playwright>
  <Browser>chromium</Browser>
  <Channel>msedge</Channel>
- <ExpectTimeout>10000</ExpectTimeout>
+ <ExpectTimeout>5000</ExpectTimeout>
  <LaunchOptions>
       <Headless>true</Headless>
  </LaunchOptions>

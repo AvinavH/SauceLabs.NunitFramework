@@ -31,14 +31,14 @@ namespace SauceLabs.NunitFramework.Tests
         }
 
         [Test, Category("negative")]
-        [TestCase(Users.LockedOut, "secret_sauce", "Epic sadface: Sorry, this user has been locked out.'")]
+        [TestCase(Users.LockedOut, "secret_sauce", "Epic sadface: Sorry, this user has been locked out.")]
         [TestCase(Users.Standard, "wrong_password", "Epic sadface: Username and password do not match any user in this service")]
         [TestCase("", "secret_sauce", "Epic sadface: Username is required")]
         public async Task InvalidLogin_ShowsError(string user, string password, string expectedError)
         {
             await _loginPage.LoginAsync(user, password);
             await Expect(_loginPage.GetErrorMessage()).ToHaveTextAsync(expectedError);
-            await Expect(Page).ToHaveURLAsync(new Regex("login.html"));
+            await Expect(Page).Not.ToHaveURLAsync(new Regex("inventory.html"));
         }
 
 

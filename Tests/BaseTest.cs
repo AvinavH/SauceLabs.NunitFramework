@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 
 namespace SauceLabs.NunitFramework.Tests
@@ -27,9 +28,15 @@ namespace SauceLabs.NunitFramework.Tests
         public async Task StopTracing()
         {
             bool testFailed = TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed;
+            string safeName = string.Join("_",
+            (TestContext.CurrentContext.Test.MethodName ?? "UnknownTest").Split(Path.GetInvalidFileNameChars()));
+            string tracePath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "traces", $"{safeName}.zip");
+            Console.WriteLine($"Trace is saved at ${tracePath}");
             await Context.Tracing.StopAsync(new()
             {
-                Path = testFailed ? $"trace-{TestContext.CurrentContext.Test.Name}.zip" : null
+                Path = testFailed
+                    ? Path.Combine(TestContext.CurrentContext.WorkDirectory, "traces", $"{safeName}.zip")
+                    : null
             });
         }
         

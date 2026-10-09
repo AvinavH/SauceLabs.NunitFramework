@@ -8,21 +8,23 @@ using SauceLabs.NunitFramework.Pages;
 namespace SauceLabs.NunitFramework.Tests
 {
     [Parallelizable(ParallelScope.Self)]
+    //[FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     [TestFixture]
     [Category("Cart")]
-    public class InventoryTest : BaseTest
+    public class InventoryTest : AuthenticatedBrowserTest
     {
         private InventoryPage _inventoryPage = null!;
 
-        [SetUp]
+         [SetUp]
         public async Task LogIn()
         {
-            var loginPage = new LoginPage(Page);
+            /* var loginPage = new LoginPage(Page);
             await Page.GotoAsync(config.TestSettings.baseURL);
-            await loginPage.LoginAsync(data.Users.Standard, config.TestSettings.saucePassword);
+            await loginPage.LoginAsync(data.Users.Standard, config.TestSettings.saucePassword); */
+            await Page.GotoAsync("/inventory.html");
             _inventoryPage = new InventoryPage(Page);
             await Expect(Page).ToHaveURLAsync(new Regex("inventory.html"));
-        }
+        } 
 
         [Test, Category("smoke")]
         public async Task AddItemToCart()
